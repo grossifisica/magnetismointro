@@ -10,6 +10,10 @@ import {
   Lightbulb
 } from 'lucide-react';
 
+// Import images directly so Vite bundles them with hashes in dist/ for production deployments
+import magnetCleanImg from '../assets/images/magnet_clean_same_bar.jpg';
+import ironFilingsImg from '../assets/images/iron_filings_magnet_1791982179637.jpg';
+
 export const IronFilingsTab: React.FC = () => {
   // State: whether iron filings have been spread or not (initially false)
   const [hasFilings, setHasFilings] = useState<boolean>(false);
@@ -35,6 +39,12 @@ export const IronFilingsTab: React.FC = () => {
   const [sprinkleParticles, setSprinkleParticles] = useState<Array<{ id: number; x: number; y: number; delay: number; size: number }>>([]);
 
   useEffect(() => {
+    // Preload both images so they are immediately available in cache with zero load latency
+    const imgClean = new Image();
+    imgClean.src = magnetCleanImg;
+    const imgFilings = new Image();
+    imgFilings.src = ironFilingsImg;
+
     // Pre-generate 60 particle positions for the sprinkling visual effect
     const particles = Array.from({ length: 60 }, (_, i) => ({
       id: i,
@@ -106,9 +116,9 @@ export const IronFilingsTab: React.FC = () => {
     }, 600);
   };
 
-  const currentImageSrc = hasFilings
-    ? '/src/assets/images/iron_filings_magnet_1791982179637.jpg'
-    : '/src/assets/images/magnet_clean_surface_1791982509883.jpg';
+  const currentImageSrc = (hasFilings || (isSprinkling && sprinkleProgress > 40))
+    ? ironFilingsImg
+    : magnetCleanImg;
 
   return (
     <div className="space-y-6">
@@ -221,22 +231,23 @@ export const IronFilingsTab: React.FC = () => {
                 paperTapped ? 'translate-y-0.5 translate-x-0.5' : ''
               }`}
             >
-              {/* Base Clean Magnet Image */}
+              {/* Base Clean Magnet Image (Same bar magnet) */}
               <img
-                src="/src/assets/images/magnet_clean_surface_1791982509883.jpg"
+                src={magnetCleanImg}
                 alt="Ímã em barra sobre cartolina branca sem limalha"
-                referrerPolicy="no-referrer"
                 className="absolute inset-0 w-full h-full object-cover select-none"
                 draggable={false}
               />
 
-              {/* Iron Filings Image (Crossfades smoothly on top when spread) */}
+              {/* Iron Filings Image (Smoothly fades in progressively during sprinkling and stays full when spread) */}
               <img
-                src="/src/assets/images/iron_filings_magnet_1791982179637.jpg"
+                src={ironFilingsImg}
                 alt="Ímã com limalha de ferro real formando linhas de indução"
-                referrerPolicy="no-referrer"
-                className={`absolute inset-0 w-full h-full object-cover select-none transition-opacity duration-1000 ${
-                  hasFilings ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                style={{
+                  opacity: hasFilings ? 1 : isSprinkling ? Math.max(0.08, sprinkleProgress / 100) : 0,
+                }}
+                className={`absolute inset-0 w-full h-full object-cover select-none transition-opacity duration-500 ${
+                  !hasFilings && !isSprinkling ? 'pointer-events-none' : ''
                 }`}
                 draggable={false}
               />
