@@ -4,12 +4,9 @@ import {
   ZoomIn,
   Eye,
   RotateCcw,
-  Info,
-  Compass,
   Layers,
   CheckCircle2,
   Trash2,
-  Play,
   Lightbulb
 } from 'lucide-react';
 
@@ -30,9 +27,6 @@ export const IronFilingsTab: React.FC = () => {
     relX: 0.5,
     relY: 0.5,
   });
-
-  // Selected educational highlight zone (without 1,2,3,4,5 numbers on canvas)
-  const [selectedZone, setSelectedZone] = useState<string | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const animationFrameRef = useRef<number | null>(null);
@@ -100,7 +94,6 @@ export const IronFilingsTab: React.FC = () => {
   const handleClearSurface = () => {
     if (isSprinkling) return;
     setHasFilings(false);
-    setSelectedZone(null);
     setPaperTapped(false);
   };
 
@@ -112,25 +105,6 @@ export const IronFilingsTab: React.FC = () => {
       setPaperTapped(false);
     }, 600);
   };
-
-  // Zone explanations for study (accessible from controls without numbers on image)
-  const observationZones = [
-    {
-      id: 'poles',
-      title: 'Polos Norte e Sul',
-      description: 'Observe a alta concentração de partículas nos dois polos. Formam-se agulhas e tufos proeminentes de limalha devido à intensidade máxima do campo magnético nessas extremidades.',
-    },
-    {
-      id: 'arches',
-      title: 'Arcos Laterais Contínuos',
-      description: 'Cada fragmento de limalha de ferro comporta-se como um minúsculo ímã, unindo-se ponta-a-ponta em curvas fechadas que partem do polo Norte e chegam ao polo Sul.',
-    },
-    {
-      id: 'dispersion',
-      title: 'Espalhamento à Distância',
-      description: 'Conforme nos afastamos do ímã, o espaçamento entre as trilhas de limalha cresce, demonstrando que a força e a intensidade do campo magnético diminuem com a distância.',
-    },
-  ];
 
   const currentImageSrc = hasFilings
     ? '/src/assets/images/iron_filings_magnet_1791982179637.jpg'
@@ -500,97 +474,10 @@ export const IronFilingsTab: React.FC = () => {
             </div>
           </div>
 
-          {/* Interactive Observation Topics (Clean buttons without numbers over image) */}
-          <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-                <Lightbulb className="w-3.5 h-3.5 text-indigo-600" />
-                Pontos de Observação do Fenômeno
-              </span>
-              {selectedZone && (
-                <button
-                  onClick={() => setSelectedZone(null)}
-                  className="text-xs text-indigo-600 hover:underline"
-                >
-                  Recolher detalhes
-                </button>
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              {observationZones.map((zone) => {
-                const isActive = selectedZone === zone.id;
-                return (
-                  <button
-                    key={zone.id}
-                    onClick={() => setSelectedZone(isActive ? null : zone.id)}
-                    className={`p-3 rounded-xl text-left border transition-all text-xs ${
-                      isActive
-                        ? 'bg-indigo-50 border-indigo-300 ring-2 ring-indigo-200 text-indigo-900 font-semibold'
-                        : 'bg-slate-50/80 border-slate-200 text-slate-700 hover:bg-slate-100'
-                    }`}
-                  >
-                    <div className="font-bold flex items-center justify-between">
-                      <span>{zone.title}</span>
-                      {isActive && <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600" />}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-
-            {selectedZone && (
-              <div className="p-3 bg-indigo-50/60 rounded-xl border border-indigo-100 text-xs text-slate-700 leading-relaxed">
-                {observationZones.find((z) => z.id === selectedZone)?.description}
-              </div>
-            )}
-          </div>
         </div>
 
         {/* Didactic Information & Scientific Principles (Right 4 Cols) */}
         <div className="lg:col-span-4 space-y-4">
-          {/* Card: O que é a Limalha de Ferro? */}
-          <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs">
-            <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2 mb-2">
-              <Info className="w-4 h-4 text-indigo-600" />
-              O que é a Limalha de Ferro?
-            </h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              A <strong>limalha de ferro</strong> é constituída por minúsculas partículas ou pó de ferro puro. Como o ferro é um elemento <strong>ferromagnético</strong>, seus dipolos magnéticos atômicos respondem de forma extraordinariamente forte na presença de um campo magnético externo.
-            </p>
-          </div>
-
-          {/* Card: Por que as linhas se formam? */}
-          <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
-            <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
-              <Compass className="w-4 h-4 text-red-500" />
-              Por que a Limalha desenha Linhas?
-            </h3>
-
-            <div className="space-y-2.5 text-xs text-slate-600">
-              <div className="flex items-start gap-2.5">
-                <div className="w-2 h-2 rounded-full bg-indigo-600 shrink-0 mt-1.5" />
-                <div>
-                  <strong className="text-slate-800">Imantação por Indução:</strong> Na proximidade do ímã, cada fragmento de ferro se magnetiza temporariamente, transformando-se em um microscópico dipolo magnético.
-                </div>
-              </div>
-
-              <div className="flex items-start gap-2.5">
-                <div className="w-2 h-2 rounded-full bg-indigo-600 shrink-0 mt-1.5" />
-                <div>
-                  <strong className="text-slate-800">Alinhamento Tangente:</strong> O torque exercido pela força magnética orienta o eixo de cada partícula na direção tangente do vetor campo magnético local <span className="font-mono font-semibold">B</span>.
-                </div>
-              </div>
-
-              <div className="flex items-start gap-2.5">
-                <div className="w-2 h-2 rounded-full bg-indigo-600 shrink-0 mt-1.5" />
-                <div>
-                  <strong className="text-slate-800">Atração Ponta-a-Ponta:</strong> Os polos opostos dos microfragmentos se atraem e se encadeiam em filas contínuas, tornando as linhas de campo visíveis fisicamente!
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* Card: Leis Físicas Observáveis */}
           <div className="bg-slate-900 text-white rounded-2xl p-5 shadow-xs space-y-3">
             <h3 className="font-bold text-white text-sm flex items-center gap-2">
@@ -618,16 +505,6 @@ export const IronFilingsTab: React.FC = () => {
                 </span>
               </li>
             </ul>
-          </div>
-
-          {/* Historical Note */}
-          <div className="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-4 text-xs text-amber-900">
-            <div className="font-bold mb-1 flex items-center gap-1.5">
-              <span>📜 Fato Histórico (Michael Faraday)</span>
-            </div>
-            <p className="leading-relaxed text-amber-800">
-              Foi através deste exato experimento de espalhar limalha de ferro sobre papel que Michael Faraday desenvolveu o conceito de <em>linhas de força</em> em 1831, revolucionando para sempre a física clássica e a teoria dos campos.
-            </p>
           </div>
         </div>
       </div>
