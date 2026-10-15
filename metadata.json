@@ -1,0 +1,7 @@
+{
+  "name": "Introdução ao Magnetismo",
+  "description": "Aplicativo didático interativo para estudo de ímãs, atração e repulsão, inseparabilidade dos polos magnéticos, experimento com limalha de ferro real, linhas de indução e magnetismo terrestre.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
